@@ -1,12 +1,12 @@
 package main
 
 import (
-	"html/template"
 	"net/http"
+	"text/template"
 )
 
 type data struct {
-	ID  int
+	ID  int	
 	Day string
 }
 
@@ -29,4 +29,25 @@ func (app *application) home(response http.ResponseWriter, request *http.Request
 
 		return
 	}
+
+	// content := `
+	// <html>
+	// 	<head>
+	// 		<title>%s</title>
+	// 	</head>
+	// 	<body>
+	// 		<h4>hello</h4>
+	// 		<p>id: %d</p>
+	// 		<p>enjoy your %s</p>
+	// 	</body>
+	// </html>
+	// `
+
+	// dt := &data{
+	// 	id: 123,
+	// 	day: "saturday",
+	// }
+
+	// content = fmt.Sprintf(content, "perfect title", dt.id, dt.day)
+	// response.Write([]byte(content))
 }
