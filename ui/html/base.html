@@ -1,0 +1,19 @@
+{{define "base"}}
+<!doctype html>
+<html>
+    <head>
+        {{template "title" .}}
+    </head>
+    <body>
+        <header>
+            <nav>
+                <a href="/">home</a>
+                <a href="/about">about</a>
+                <a href="/settings">settings</a>
+            </nav>
+        </header>
+
+        {{template "main" .}}
+    </body>
+</html>
+{{end}}
