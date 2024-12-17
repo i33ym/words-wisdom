@@ -30,6 +30,30 @@ func (app *application) home(response http.ResponseWriter, request *http.Request
 		return
 	}
 
+	qs := []Quote{}
+	q := Quote{}
+
+	query := "select * from quotes;"
+
+	rows, err := app.db.Query(query)
+	if err != nil {
+		app.logger.Printf("failed to fetch the quotes: %s", err)
+		response.Write([]byte("something terrible happened. sorry!"))
+
+		return
+	}
+
+	for rows.Next() {
+		if err := rows.Scan(&q.ID, &q.CreatedAt, &q.Quote, &q.Author, &q.Version); err != nil {
+			app.logger.Printf("failed to scan the quote: %s", err)
+			response.Write([]byte("something terrible happened. sorry!"))
+	
+			return
+		}
+
+		qs = append(qs, q)
+	}
+
 	if err := ts.ExecuteTemplate(response, "base", nil); err != nil {
 		app.logger.Printf("failed to execute the template: %s", err)
 		response.Write([]byte("something terrible happened. sorry!"))

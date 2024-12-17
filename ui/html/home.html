@@ -3,5 +3,15 @@
 {{end}}
 
 {{define "main"}}
-    <p>this is the home page.</p>
+    {{if .}}
+    {{range .}}
+        <p>{{.ID}} - {{.CreatedAt}}</p>
+        <div>
+            <p>{{.Quote}}</p>
+            <pre>{{.Author}}</pre>
+        </div>
+    {{end}}
+    {{else}}
+        <p>there is nothing to display here yet!</p>
+    {{end}}
 {{end}}
