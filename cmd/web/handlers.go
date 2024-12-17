@@ -17,6 +17,48 @@ type Quote struct {
 	Version   int
 }
 
+func (app *application) form(response http.ResponseWriter, request *http.Request) {
+	files := []string{
+		"./ui/html/base.html",
+		"./ui/html/create.html",
+	}
+
+	ts, err := template.ParseFiles(files...)
+	if err != nil {
+		app.logger.Printf("failed to parse the file: %s", err)
+		response.Write([]byte("something terrible happened. sorry!"))
+
+		return
+	}
+
+	if err := ts.ExecuteTemplate(response, "base", nil); err != nil {
+		app.logger.Printf("failed to execute the template: %s", err)
+		response.Write([]byte("something terrible happened. sorry!"))
+
+		return
+	}
+}
+
+func (app *application) create(response http.ResponseWriter, request *http.Request) {
+	if err := request.ParseForm(); err != nil {
+		response.Write([]byte("bad request!"))
+		return
+	}
+
+	quote := request.PostForm.Get("quote")
+	author := request.PostForm.Get("author")
+
+	query := fmt.Sprintf("insert into quotes (quote, author) values ('%s', '%s');", quote, author)
+	if _, err := app.db.Exec(query); err != nil {
+		app.logger.Printf("failed to insert a new record: %s", err)
+		response.Write([]byte("something terrible happened. sorry!"))
+
+		return
+	}
+
+	response.Write([]byte("congratulations!"))
+}
+
 func (app *application) home(response http.ResponseWriter, request *http.Request) {
 	files := []string{
 		"./ui/html/base.html",
@@ -47,14 +89,14 @@ func (app *application) home(response http.ResponseWriter, request *http.Request
 		if err := rows.Scan(&q.ID, &q.CreatedAt, &q.Quote, &q.Author, &q.Version); err != nil {
 			app.logger.Printf("failed to scan the quote: %s", err)
 			response.Write([]byte("something terrible happened. sorry!"))
-	
+
 			return
 		}
 
 		qs = append(qs, q)
 	}
 
-	if err := ts.ExecuteTemplate(response, "base", nil); err != nil {
+	if err := ts.ExecuteTemplate(response, "base", qs); err != nil {
 		app.logger.Printf("failed to execute the template: %s", err)
 		response.Write([]byte("something terrible happened. sorry!"))
 

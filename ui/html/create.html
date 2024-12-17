@@ -1,0 +1,18 @@
+{{define "title"}}
+    <title>create</title>
+{{end}}
+
+{{define "main"}}
+<form action='/create' method='POST'>
+    <div>
+        <label>quote:</label>
+        <input type='text' name='quote'>
+    </div>
+    <div>
+        <label>author:</label>
+        <input type='text' name='author'>
+    </div>
+    <input type='submit' value='publish'>
+    </div>
+    </form>
+{{end}}
